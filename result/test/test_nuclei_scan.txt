@@ -1,3 +1,0 @@
-[open-redirect-generic] [http] [medium] http://39.105.131.50:81//oast.me/ [redirect="/oast.me/"]
-[open-redirect-generic] [http] [medium] https://39.105.131.50//oast.me/ [redirect="/oast.me/"]
-[CVE-2023-48795] [javascript] [medium] 39.105.131.50:22 ["Vulnerable to Terrapin"]
