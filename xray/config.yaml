@@ -150,6 +150,11 @@ mitm:
     hostname_allowed: []                # 允许访问的 Hostname，支持格式如 t.com、*.t.com、1.1.1.1、1.1.1.1/24、1.1-4.1.1-8
     hostname_disallowed:                # 不允许访问的 Hostname，支持格式如 t.com、*.t.com、1.1.1.1、1.1.1.1/24、1.1-4.1.1-8
     - '*ponies*'
+    - '*google*'
+    - '*github*'
+    - '*.gov.cn'
+    - '*chaitin*'
+    - '*.xray.cool'
     port_allowed: []                    # 允许访问的端口, 支持的格式如: 80、80-85
     port_disallowed: []                 # 不允许访问的端口, 支持的格式如: 80、80-85
     path_allowed: []                    # 允许访问的路径，支持的格式如: test、*test*

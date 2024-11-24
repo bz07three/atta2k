@@ -2,8 +2,28 @@
 import os
 import time
 import argparse
+import requests
+import json
 
+class DingTalk_Base:
+    def __init__(self, name):
+        self.name = name
+        self.__headers = {'Content-Type': 'application/json;charset=utf-8'}
+        self.url = 'https://oapi.dingtalk.com/robot/send?access_token=5ce7612c1cab703c3ff744a036c3ce35f0594bdac88906d24d1241a104bd2e9a'
 
+    def send_msg(self):
+        json_text = {
+            "msgtype": "text",
+            "text": {
+                "content": "目标“{}”扫描已接近尾声，请及时查看".format(self.name)
+            },
+            "at": {
+                "atMobiles": [""],
+                "isAtAll": False
+            }
+        }
+        response = requests.post(self.url, json=json_text, headers=self.__headers)
+        return response.content
 
 def biaoti():
     splash1 = """
@@ -150,7 +170,8 @@ def masscan2httpx2nuclei_main(args):
             +----------------------------------+
         """
     print(splash8)
-
+    dingding = DingTalk_Base(name)
+    dingding.send_msg()
     exit()
 
 
@@ -164,4 +185,3 @@ if __name__ == '__main__':
 
     main()
     exit()
-
