@@ -3,14 +3,12 @@ import os
 import time
 import argparse
 
-
-
 def biaoti():
     splash1 = """
         +----------------------------------+
         | Masscan2Httpx2Nuclei             |
         +----------------------------------+
-        | by mbskter &  bzz                |
+        | by mbskter &bz                      |
         +----------------------------------+
     """
     print(splash1)
@@ -27,11 +25,12 @@ def args():
 def update():
     splash00 = """
         +----------------------------------+
-        | nucle检查更新ing
+        | nuclei&xray检查更新ing
         +----------------------------------+
     """
     print(splash00)
     os.system('./nuclei/nuclei -update')
+    os.system('./xray upgrade')
     splash03 = """
         +----------------------------------+
         | 检查完毕，开扫
@@ -61,21 +60,16 @@ def masscan2httpx2nuclei(args):
     port = args.port
     rate = args.rate
     name=args.name
-    dirname="result/{}".format(name)
-    try:
-        os.makedirs(dirname, exist_ok=True)  # exist_ok=True表示如果目录已存在，不会抛出异常
-        print(f"结果输出目录 {dirname} 创建成功。")
-    except Exception as e:
-        print(f"创建目录时出错：{e}")
-    os.system('masscan -iL ' + input_file + ' -p' + port +" --rate "+rate+' -oL result/{}/{}_portscan.txt'.format(name,name))
+    os.system('masscan -iL ' + input_file + ' -p' + port +" --rate "+rate+' -oL result/{}_portscan.txt'.format(name))
 
 def masscan2httpx2nuclei_main(args):
     args = check_args(args)
     name = args.name
-    portname='result/{}/{}_portscan.txt'.format(name,name)
-    portconvert = 'result/{}/{}_portconvert.txt'.format(name,name)
-    httpxname='result/{}/{}_httpx_scan.txt'.format(name,name)
-    nucleiname='result/{}/{}_nuclei_scan.txt'.format(name,name)
+    portname='result/{}_portscan.txt'.format(name)
+    portconvert = 'result/{}_portconvert.txt'.format(name)
+    httpxname='result/{}_httpx_scan.txt'.format(name)
+    nucleiname='result/{}_nuclei_scan.txt'.format(name)
+    xrayname='result/{}_xray_scan.txt'.format(name)
     while True:
         if os.path.exists(portname):
             break
@@ -123,16 +117,17 @@ def masscan2httpx2nuclei_main(args):
         """
         print(splash5)
         exit()
-    if os.path.getsize(httpxname)!=0:
-        os.system('./nuclei/nuclei -l {} -s medium,high,critical -timeout 5 -p socks5://127.0.0.1:10086 -o {}'.format(httpxname,nucleiname))
+    if os.path.exists(httpxname):
+        os.system('./nuclei/nuclei -l {} -s medium,high,critical -p socks5://127.0.0.1:10086 -o {}'.format(httpxname,nucleiname))
         os.system('./rad/rad -uf {} -http-proxy 127.0.0.1:7777'.format(httpxname))
+
     else:
         print("扫描结果未发现http协议")
         exit()
-    if os.path.getsize(nucleiname)!=0:
+    if os.path.exists("nucleiresult.txt"):
         splash6 = """
             +----------------------------------+
-            | 扫描完成。请在结果输出目录查看
+            | 扫描完成。请查看nucleiresult.txt
             +----------------------------------+
         """
         print(splash6)
@@ -143,14 +138,20 @@ def masscan2httpx2nuclei_main(args):
             +----------------------------------+
         """
         print(splash7)
-
-    splash8 = """
+    if os.path.exists("xray.html"):
+        splash8 = """
             +----------------------------------+
-            | xray正在扫描，详情请查看xray面板
+            | 扫描完成。请查看xray.html
             +----------------------------------+
         """
-    print(splash8)
-
+        print(splash8)
+    else:
+        splash9 = """
+            +----------------------------------+
+            | 扫描完成。请查看xray.html
+            +----------------------------------+
+        """
+        print(splash9)
     exit()
 
 
@@ -161,7 +162,6 @@ def main():
     masscan2httpx2nuclei_main(args())
 
 if __name__ == '__main__':
-
     main()
     exit()
 
