@@ -5,7 +5,7 @@ parallel: 30                      # 漏洞探测的 worker 数量，可以简单
 # 全局 http 发包配置
 # 更多解释见 https://docs.xray.cool/#/configration/http
 http:
-  proxy: ""                             # 漏洞扫描时使用的代理，如: http://127.0.0.1:8080。 如需设置多个代理，请使用 proxy_rule 或自行创建上层代理
+  proxy: "socks5://127.0.0.1:10086"                            # 漏洞扫描时使用的代理，如: http://127.0.0.1:8080。 如需设置多个代理，请使用 proxy_rule 或自行创建上层代理
   proxy_rule: []                        # 漏洞扫描使用多个代理的配置规则, 具体请参照文档
   dial_timeout: 5                       # 建立 tcp 连接的超时时间
   read_timeout: 10                      # 读取 http 响应的超时时间，不可太小，否则会影响到 sql 时间盲注的判断
