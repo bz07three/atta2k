@@ -9,7 +9,7 @@ class DingTalk_Base:
     def __init__(self, name):
         self.name = name
         self.__headers = {'Content-Type': 'application/json;charset=utf-8'}
-        self.url = 'https://oapi.dingtalk.com/robot/send?access_token=5ce7612c1cab703c3ff744a036c3ce35f0594bdac88906d24d1241a104bd2e9a'
+        self.url = 'https://oapi.dingtalk.com/robot/send?access_token=XXXXXXXXXX'
 
     def send_msg(self):
         json_text = {
