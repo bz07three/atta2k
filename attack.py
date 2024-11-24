@@ -111,9 +111,8 @@ def masscan2httpx2nuclei_main():
         print(splash5)
         exit()
     if os.path.exists("httpxresult.txt"):
-        os.system('./nuclei/nuclei -l httpxresult.txt -s medium,high,critical -p socks5://127.0.0.1:10086 -o nucleiresult.txt')
-         # os.system('./xray -url-file httpxresult.txt --html-output xray.html')
-        os.system('./rad -uf httpxresult.txt -http-proxy 127.0.0.1:7777')
+        #os.system('./nuclei/nuclei -l httpxresult.txt -s medium,high,critical -p socks5://127.0.0.1:10086 -o nucleiresult.txt')
+        os.system('./rad/rad -uf httpxresult.txt -http-proxy 127.0.0.1:7777')
         os.remove("httpxresult.txt")
 
         #os.remove("masscanconvert.txt")

