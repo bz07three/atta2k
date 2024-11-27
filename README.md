@@ -1,6 +1,6 @@
 # atta2k
 
-  本项目基于whoisavicii师傅的Masscan2Httpx2Nuclei-Xray项目上开发
+  本项目基于whoisavicii师傅的Masscan&Httpx&Nuclei&Xray项目上开发
   
   (原项目地址：https://github.com/whoisavicii/Masscan2Httpx2Nuclei-Xray)
 
